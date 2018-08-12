@@ -7,8 +7,9 @@ import shutil
 from timeit import default_timer as timer
 from datetime import timedelta
 
-from c51agent import C51DQNAgent
+from qrdqnagent import QRduelingDQNAgent
 from collections import deque
+
 
 np.random.seed(1212)
 tf.set_random_seed(1212)
@@ -31,13 +32,13 @@ path = "./CartPole_test"
 
 def main():
     with tf.Session() as sess:
-        C51brain = C51DQNAgent(sess, OUTPUT, INPUT,
-                               learning_rate=LEARNING_RATE,
-                               gamma=DISCOUNT,
-                               batch_size=MINIBATCH_SIZE,
-                               buffer_size=MEMORY_SIZE,
-                            gradient_norm=None
-                               )
+        QRbrain = QRduelingDQNAgent(sess, OUTPUT, INPUT,
+                                    learning_rate=LEARNING_RATE,
+                                    gamma=DISCOUNT,
+                                    batch_size=MINIBATCH_SIZE,
+                                    buffer_size=MEMORY_SIZE,
+                                    gradient_norm=None
+                                    )
 
         all_rewards = []
         recent_rlist = deque(maxlen=15)
@@ -45,8 +46,7 @@ def main():
         episode, epoch, frame = 0, 0, 0
         start = timer()
 
-        # Train agent
-        while np.mean(recent_rlist) <= 197:
+        while np.mean(recent_rlist) <= 198:
             episode += 1
 
             rall, count = 0, 0
@@ -57,7 +57,7 @@ def main():
                 frame += 1
                 count += 1
 
-                action = C51brain.choose_action(s)
+                action = QRbrain.choose_action(s)
 
                 s_, r, done, l = env.step(action)
 
@@ -66,27 +66,26 @@ def main():
                 else:
                     reward = r
 
-                C51brain.memory_add(s, action.astype(float), reward, s_, int(done))
+                QRbrain.memory_add(s, action.astype(float), reward, s_, int(done))
                 s = s_
 
                 rall += r
 
                 if frame > TRAIN_START:
-                    C51brain.learn()
+                    QRbrain.learn()
 
             recent_rlist.append(rall)
             all_rewards.append(rall)
 
-            print("Episode:{} | Reward:{} |Recent reward:{}".format(episode, rall, np.mean(recent_rlist)))
+            print("Episode:{} | Steps:{} | Reward:{} |Recent reward:{}".format(episode, count, rall, np.mean(recent_rlist)))
 
         if os.path.isdir(path): shutil.rmtree(path)
         os.mkdir(path)
-        ckpt_path = os.path.join(path, 'C51_DQN.ckpt')
-        C51brain.save_model(ckpt_path)
+        ckpt_path = os.path.join(path, 'QR_duel_DQN.ckpt')
+        QRbrain.save_model(ckpt_path)
 
         plt.figure(figsize=(15, 5))
-        plt.title('Episode %s. Recent_reward: %s. Time: %s' % (
-            len(all_rewards), np.mean(recent_rlist), timedelta(seconds=int(timer() - start))))
+        plt.title('Episode %s. Recent_reward: %s. Time: %s' % (len(all_rewards), np.mean(recent_rlist), timedelta(seconds=int(timer()-start))))
         plt.plot(all_rewards)
         plt.show()
         plt.close()

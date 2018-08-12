@@ -122,16 +122,16 @@ class C51DQNAgent:
         bs_ = np.vstack(minibatch[:, 3])
         bd = np.vstack(minibatch[:, 4])
 
-        m_prob = self.projection_dist(ba, br, bs_, bd)
+        m_prob = self.projection_dist(br, bs_, bd)
 
         self.sess.run(self.train_op, {self.S: bs, self.A: ba, self.M: m_prob})
 
         self.iter += 1
 
-    def projection_dist(self, ba, br, bs_, bd):
+    def projection_dist(self, br, bs_, bd):
         m_prob = np.zeros([bs_.shape[0], self.num_c])
 
-        p_next_a = self.sess.run(self.dist_q_next_a, feed_dict={self.A: ba, self.S_: bs_})
+        p_next_a = self.sess.run(self.dist_q_next_a, feed_dict={self.S_: bs_})
 
         for j in range(self.num_c):
             Tz = np.fmin(self.V_max, np.fmax(self.V_min, br + (1 - bd) * self.gamma * (self.V_min + j * self.dz)))
@@ -140,8 +140,10 @@ class C51DQNAgent:
             uj = np.ceil(bj).astype(int)
             blj = bj - lj
             buj = uj - bj
-            m_prob[np.arange(bs_.shape[0]), lj[np.arange(bs_.shape[0]), 0]] += (bd[:, 0] + (1 - bd[:, 0]) * (p_next_a[:, j])) * buj[:, 0]
-            m_prob[np.arange(bs_.shape[0]), uj[np.arange(bs_.shape[0]), 0]] += (bd[:, 0] + (1 - bd[:, 0]) * (p_next_a[:, j])) * blj[:, 0]
+            m_prob[np.arange(self.batch_size), lj[np.arange(self.batch_size), 0]] += \
+                (bd[:, 0] + (1 - bd[:, 0]) * (p_next_a[:, j])) * buj[:, 0]
+            m_prob[np.arange(self.batch_size), uj[np.arange(self.batch_size), 0]] += \
+                (bd[:, 0] + (1 - bd[:, 0]) * (p_next_a[:, j])) * blj[:, 0]
 
         m_prob = m_prob / m_prob.sum(axis=1, keepdims=1)
 
