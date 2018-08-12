@@ -7,7 +7,7 @@ import shutil
 from timeit import default_timer as timer
 from datetime import timedelta
 
-from c51agent import C51DQNAgent, C51duelingDQNAgent
+from c51agent import C51DQNAgent
 from collections import deque
 
 np.random.seed(1212)
@@ -57,10 +57,8 @@ def main():
                 frame += 1
                 count += 1
 
-                # 액션 선택
                 action = C51brain.choose_action(s)
 
-                # s1 : next frame / r : reward / d : done(terminal) / l : info(lives)
                 s_, r, done, l = env.step(action)
 
                 if done:
@@ -79,8 +77,7 @@ def main():
             recent_rlist.append(rall)
             all_rewards.append(rall)
 
-            print("Episode:{} | Steps:{} | Reward:{} |Recent reward:{}".format(episode, count, rall,
-                                                                               np.mean(recent_rlist)))
+            print("Episode:{} | Reward:{} |Recent reward:{}".format(episode, rall, np.mean(recent_rlist)))
 
         if os.path.isdir(path): shutil.rmtree(path)
         os.mkdir(path)
