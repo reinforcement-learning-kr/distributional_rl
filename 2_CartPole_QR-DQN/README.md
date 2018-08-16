@@ -1,4 +1,4 @@
-# C51
+# QR-DQN
 본 markdown 파일은 2017년에 발표된 논문 [A Distributional Perspective on Reinforcement Learning](https://arxiv.org/abs/1707.06887) 의 내용에 대해 설명하는 논문입니다.
 
 <center>
