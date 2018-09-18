@@ -44,13 +44,13 @@ class Distributional_RL:
 
             self.train_op = tf.train.AdamOptimizer(1e-4).minimize(self.loss)
 
-        if self.model == 'DQN':
+        elif self.model == 'DQN':
             self.Q_s_a = self.main_network * self.action
             self.Q_s_a = tf.expand_dims(tf.reduce_sum(self.Q_s_a, axis=1), -1)
             self.loss = tf.losses.mean_squared_error(self.dqn_Y, self.Q_s_a)
             self.train_op = tf.train.AdamOptimizer(0.0001).minimize(self.loss)
 
-        if self.model == 'QRDQN':
+        elif self.model == 'QRDQN':
             self.theta_s_a = self.main_network
             expand_dim_action = tf.expand_dims(self.action, -1)
             theta_s_a = tf.reduce_sum(self.main_network * expand_dim_action, axis=1)
@@ -93,7 +93,7 @@ class Distributional_RL:
             return self.sess.run([self.train_op, self.loss], feed_dict={self.state: state_stack, self.action: action_stack, self.tau:t, self.Y: T_theta})
 
 
-        if self.model == 'DQN':
+        elif self.model == 'DQN':
             Q_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
             next_action = np.argmax(Q_next_state, axis=1)
             Q_next_state_next_action = [s[a] for s, a in zip(Q_next_state, next_action)]
@@ -101,7 +101,7 @@ class Distributional_RL:
             return self.sess.run([self.train_op, self.loss],
                                  feed_dict={self.state: state_stack, self.action: action_stack, self.dqn_Y: T_theta})
 
-        if self.model == 'QRDQN':
+        elif self.model == 'QRDQN':
             Q_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
             next_action = np.argmax(np.mean(Q_next_state, axis=2), axis=1)
             Q_next_state_next_action = [Q_next_state[i, action, :] for i, action in enumerate(next_action)]
