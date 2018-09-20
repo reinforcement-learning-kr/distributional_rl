@@ -10,17 +10,23 @@ class Distributional_RL:
         self.action_size = 2
         self.model = model
         self.sess = sess
-        self.batch_size = 32
+        self.batch_size = 8
         self.gamma = 0.99
         self.quantile_embedding_dim = 64
 
-        self.num_support = 64
+        self.num_support = 8
+        self.V_max = 5
+        self.V_min = -5
+        self.dz = float(self.V_max - self.V_min) / (self.num_support - 1)
+        self.z = [self.V_min + i * self.dz for i in range(self.num_support)]
+
         self.delta_tau = 1/self.num_support
 
         self.state = tf.placeholder(tf.float32, [None, self.state_size])
         self.action = tf.placeholder(tf.float32, [None, self.action_size])
         self.dqn_Y = tf.placeholder(tf.float32, [None, 1])
         self.Y = tf.placeholder(tf.float32, [None, self.num_support])
+        self.M = tf.placeholder(tf.float32, [None, self.num_support])
         self.tau = tf.placeholder(tf.float32, [None, self.num_support])
 
         self.main_network, self.main_action_support, self.main_params = self._build_network('main')
@@ -50,6 +56,13 @@ class Distributional_RL:
             self.loss = tf.losses.mean_squared_error(self.dqn_Y, self.Q_s_a)
             self.train_op = tf.train.AdamOptimizer(0.0001).minimize(self.loss)
 
+        elif self.model == 'C51':
+            expand_dim_action = tf.expand_dims(self.action, -1)
+            self.Q_s_a = self.main_network * expand_dim_action
+            self.Q_s_a = tf.reduce_sum(self.Q_s_a, axis=1)
+            self.loss = - tf.reduce_mean(tf.reduce_sum(tf.multiply(self.M, tf.log(self.Q_s_a + 1e-20)), axis=1))
+            self.train_op = tf.train.AdamOptimizer(0.001).minimize(self.loss)
+
         elif self.model == 'QRDQN':
             self.theta_s_a = self.main_network
             expand_dim_action = tf.expand_dims(self.action, -1)
@@ -69,7 +82,7 @@ class Distributional_RL:
             Loss = tf.where(tf.less(error_loss, 0.0), inv_tau * Huber_loss, tau * Huber_loss)
             self.loss = tf.reduce_mean(tf.reduce_sum(tf.reduce_mean(Loss, axis=2), axis=1))
 
-            self.train_op = tf.train.AdamOptimizer(1e-3).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(1e-4).minimize(self.loss)
 
         self.assign_ops = []
         for v_old, v in zip(self.target_params, self.main_params):
@@ -101,6 +114,34 @@ class Distributional_RL:
             return self.sess.run([self.train_op, self.loss],
                                  feed_dict={self.state: state_stack, self.action: action_stack, self.dqn_Y: T_theta})
 
+        elif self.model == 'C51':
+            z_space = tf.tile(tf.reshape(self.z, [1, 1, self.num_support]), [self.batch_size, self.action_size, 1])
+            prob_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
+            Q_next_state = self.sess.run(self.target_action_support * z_space, feed_dict={self.state: next_state_stack})
+            next_action = np.argmax(np.sum(Q_next_state, axis=2), axis=1)
+            prob_next_state_action = [prob_next_state[i, action, :] for i, action in enumerate(next_action)]
+
+            m_prob = np.zeros([self.batch_size, self.num_support])
+
+            for i in range(self.batch_size):
+                for j in range(self.num_support):
+                    Tz = np.fmin(self.V_max, np.fmax(self.V_min, reward_stack[i] + (1 - done_stack[i]) * 0.99 * (self.V_min + j * self.dz)))
+                    bj = (Tz - self.V_min) / self.dz
+
+                    lj = np.floor(bj).astype(int)
+                    uj = np.ceil(bj).astype(int)
+
+                    blj = bj - lj
+                    buj = uj - bj
+
+                    m_prob[i, lj] += (done_stack[i] + (1 - done_stack[i]) * (prob_next_state_action[i][j])) * buj
+                    m_prob[i, uj] += (done_stack[i] + (1 - done_stack[i]) * (prob_next_state_action[i][j])) * blj
+
+            m_prob = m_prob / m_prob.sum(axis=1, keepdims=1)
+
+            return self.sess.run([self.train_op, self.loss],
+                                 feed_dict={self.state: state_stack, self.action: action_stack, self.M: m_prob})
+
         elif self.model == 'QRDQN':
             Q_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
             next_action = np.argmax(np.mean(Q_next_state, axis=2), axis=1)
@@ -121,6 +162,16 @@ class Distributional_RL:
                 layer_3 = tf.layers.dense(inputs=layer_2, units=64, activation=tf.nn.relu,
                                           trainable=True)
                 net = tf.layers.dense(inputs=layer_3, units=self.action_size, activation=None)
+                net_action = net
+
+            elif self.model == 'C51':
+                layer_1 = tf.layers.dense(inputs=self.state, units=64, activation=tf.nn.relu, trainable=True)
+                layer_2 = tf.layers.dense(inputs=layer_1, units=64, activation=tf.nn.relu, trainable=True)
+                layer_3 = tf.layers.dense(inputs=layer_2, units=self.action_size * self.num_support, activation=None,
+                                          trainable=True)
+
+                net_pre = tf.reshape(layer_3, [-1, self.action_size, self.num_support])
+                net = tf.nn.softmax(net_pre, axis=2)
                 net_action = net
 
             elif self.model == 'QRDQN':
@@ -162,6 +213,12 @@ class Distributional_RL:
             result = self.sess.run(self.main_network, feed_dict={self.state: [state]})[0]
             action = np.argmax(result)
 
+        elif self.model == 'C51':
+            Q = self.sess.run(self.main_action_support, feed_dict={self.state: [state]})
+            z_space = np.repeat(np.expand_dims(self.z, axis=0), self.action_size, axis=0)
+            Q_s_a = np.sum(Q[0] * z_space, axis=1)
+            action = np.argmax(Q_s_a)
+
         elif self.model == 'QRDQN':
             Q = self.sess.run(self.main_network, feed_dict={self.state: [state]})
             Q_s_a = np.mean(Q[0], axis=1)
@@ -174,8 +231,3 @@ class Distributional_RL:
             Q_a = np.sum(Q_s_a, axis=1)
             action = np.argmax(Q_a)
         return action
-
-
-
-
-
