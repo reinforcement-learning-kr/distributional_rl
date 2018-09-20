@@ -56,4 +56,4 @@ while True:
         if done:
             summary = sess.run(merged, feed_dict={r: global_step})
             writer.add_summary(summary, episode)
-            print(episode, global_step, l)
+            print('episode:', episode, 'reward:', global_step, 'expectation loss:', l)
