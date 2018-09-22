@@ -1,10 +1,11 @@
 import numpy as np
 import tensorflow as tf
 import random
+import matplotlib.pyplot as plt
 
 np.random.seed(1)
 tf.set_random_seed(1)
-random.seed(1234)
+random.seed(1)
 
 
 class IQNAgent:
@@ -37,7 +38,7 @@ class IQNAgent:
         self.e_step = e_step
         self.eps_max = eps_max
         self.eps_min = eps_min
-        self.eps = 0 if not e_greedy else self.eps_max
+        self.eps = 0.0 if not e_greedy else self.eps_max
         self.target_update_step = target_update_step
         self.gradient_norm = gradient_norm
         self.view_dist = view_dist
@@ -52,12 +53,13 @@ class IQNAgent:
         self.tau = tf.placeholder(tf.float32, [None, None], 'tau')
         self.tau_ = tf.placeholder(tf.float32, [None, None], 'tau_')
 
-        self.q_theta_eval_train, self.q_mean_eval_train, self.q_mean_eval_test = self._build_net(self.S, self.tau,
-                                                                                                 scope='eval_params',
-                                                                                                 trainable=True)
-        self.q_theta_next_train, self.q_mean_next_train, self.q_mean_text_test = self._build_net(self.S_, self.tau_,
-                                                                                                 scope='target_params',
-                                                                                                 trainable=False)
+        self.q_theta_eval_train, self.q_mean_eval_train, self.q_theta_eval_test, self.q_mean_eval_test = self._build_net(
+            self.S, self.tau,
+            scope='eval_params',
+            trainable=True)
+        self.q_theta_next_train, self.q_mean_next_train, _, _ = self._build_net(self.S_, self.tau_,
+                                                                                scope='target_params',
+                                                                                trainable=False)
 
         self.qe_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='eval_params')
         self.qt_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_params')
@@ -85,7 +87,7 @@ class IQNAgent:
 
         self.saver = tf.train.Saver()
 
-        self.sess.run(tf.global_variables_initializer())
+        #self.sess.run(tf.global_variables_initializer())
 
     def _build_net(self, s, tau, scope, trainable):
 
@@ -98,8 +100,8 @@ class IQNAgent:
             init_b = tf.constant_initializer(0.001)
             pi_mtx = tf.constant(np.expand_dims(np.pi * np.arange(0, 64), axis=0), dtype=tf.float32)
 
-            #net_psi = tf.layers.dense(s_reshaped, 32, activation=tf.nn.selu,
-            #                      kernel_initializer=init_w, bias_initializer=init_b, name='psi',
+            #net_psi = tf.layers.dense(s_reshaped, 16, activation=tf.nn.selu,
+            #                          kernel_initializer=init_w, bias_initializer=init_b, name='psi',
             #                          trainable=trainable)
             cos_tau = tf.cos(tf.matmul(tau_reshaped, pi_mtx))
             net_phi = tf.layers.dense(cos_tau, 4, activation=tf.nn.relu,
@@ -107,13 +109,14 @@ class IQNAgent:
                                       trainable=trainable)
 
             #joint_term = tf.multiply(net_psi, net_phi)
-            joint_term = tf.multiply(s_reshaped, net_phi)
+            #joint_term = tf.multiply(s_reshaped, net_phi)
+            joint_term = s_reshaped+tf.multiply(s_reshaped, net_phi)
 
-            q_net = tf.layers.dense(joint_term, 256, activation=tf.nn.selu,
+            q_net = tf.layers.dense(joint_term, 32, activation=tf.nn.selu,
                                     kernel_initializer=init_w, bias_initializer=init_b, name="layer1",
                                     trainable=trainable)
 
-            q_net = tf.layers.dense(q_net, 256, activation=tf.nn.selu,
+            q_net = tf.layers.dense(q_net, 32, activation=tf.nn.selu,
                                     kernel_initializer=init_w, bias_initializer=init_b, name="layer2",
                                     trainable=trainable)
 
@@ -129,7 +132,7 @@ class IQNAgent:
 
             q_mean_test = tf.reduce_mean(q_re_test, axis=2)
 
-        return q_re_train, q_mean_train, q_mean_test
+        return q_re_train, q_mean_train, q_re_test, q_mean_test
 
     def update_target_net(self):
         self.sess.run(self.params_replace)
@@ -196,22 +199,20 @@ class IQNAgent:
     def conditional_value_at_risk(eta, tau):
         return eta * tau
 
-    @staticmethod
-    def POW(eta, tau):
-        return np.power(tau, 1 / (abs(eta) + 1))
-
     def choose_action(self, state):
         state = state[np.newaxis, :]
         tau_K = np.random.rand(1, self.num_tau)
         tau_beta = self.conditional_value_at_risk(self.eta, tau_K)
         if np.random.uniform() > self.eps:
-            actions_value = self.sess.run(self.q_mean_eval_test, feed_dict={self.S: state, self.tau: tau_beta})
+            actions_value, q_dist = self.sess.run([self.q_mean_eval_test, self.q_theta_eval_test],
+                                                  feed_dict={self.S: state, self.tau: tau_beta})
             action = np.argmax(actions_value)
 
         else:
             action = np.random.randint(0, self.a_dim)
+            actions_value, q_dist = 0, 0
 
-        return action
+        return action, actions_value, q_dist, tau_beta
 
     def save_model(self, model_path):
         print("Model saved in : ", self.saver.save(self.sess, model_path))

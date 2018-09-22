@@ -8,7 +8,7 @@ import shutil
 from timeit import default_timer as timer
 from datetime import timedelta
 
-from iqnagent import IQNAgent
+from dqnagent import DQNAgent
 from collections import deque
 
 np.random.seed(1212)
@@ -23,33 +23,19 @@ TARGET_UPDATE = 25
 MEMORY_SIZE = 20000
 INPUT = env.observation_space.shape[0]
 OUTPUT = env.action_space.n
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.001
 DISCOUNT = 0.99
 LOAD_model = True
 SAVE_model = True
 TRAIN = False
 RENDER = False
-VIEW_DIST = False
 
-path = "./CartPole_iqn_test"
-
-
-def plot_cdf(actions_value, q_dist, tau_beta):
-    y = np.repeat(np.sort(tau_beta), 2, 0)
-    plt.ylim([0, 1])
-    plt.xlim([np.max(actions_value)-1, np.max(actions_value)+1])
-    plt.xlabel('Q')
-    plt.ylabel('CDF')
-    plt.step(np.transpose(np.sort(q_dist[0])), np.transpose(y))
-    plt.legend(labels=('Left', 'Right'))
-    plt.draw()
-    plt.pause(0.00001)
-    plt.clf()
+path = "./CartPole_dqn_test"
 
 
 def train():
     with tf.Session() as sess:
-        IQNbrain = IQNAgent(sess, OUTPUT, INPUT,
+        DQNbrain = DQNAgent(sess, OUTPUT, INPUT,
                             learning_rate=LEARNING_RATE,
                             gamma=DISCOUNT,
                             batch_size=MINIBATCH_SIZE,
@@ -61,7 +47,7 @@ def train():
                             )
 
         if LOAD_model:
-            IQNbrain.load_model(tf.train.latest_checkpoint(path))
+            DQNbrain.load_model(tf.train.latest_checkpoint(path))
         else:
             sess.run(tf.global_variables_initializer())
 
@@ -73,6 +59,9 @@ def train():
         recent_rlist.append(0)
         episode, epoch, frame = 0, 0, 0
         start = timer()
+        env.env.masspole = 0.05
+        env.env.length = 2.
+        #env.env.force_mag = 10.
 
         while np.mean(recent_rlist) < 499:
             episode += 1
@@ -88,9 +77,7 @@ def train():
                 frame += 1
                 count += 1
 
-                action, actions_value, q_dist, tau_beta = IQNbrain.choose_action(s)
-                if VIEW_DIST:
-                    plot_cdf(actions_value, q_dist, tau_beta)
+                action, actions_value = DQNbrain.choose_action(s)
 
                 s_, r, done, l = env.step(action)
 
@@ -101,13 +88,13 @@ def train():
                 else:
                     reward = 0
 
-                IQNbrain.memory_add(s, float(action), reward, s_, int(done))
+                DQNbrain.memory_add(s, float(action), reward, s_, int(done))
                 s = s_
 
                 rall += r
 
                 if frame > TRAIN_START and TRAIN:
-                    loss = IQNbrain.learn()
+                    loss = DQNbrain.learn()
                     loss_list.append(loss)
                     loss_frame.append(frame)
 
@@ -121,9 +108,9 @@ def train():
         if os.path.isdir(path):
             shutil.rmtree(path)
         os.mkdir(path)
-        ckpt_path = os.path.join(path, 'IQN.ckpt')
+        ckpt_path = os.path.join(path, 'DQN.ckpt')
         if SAVE_model:
-            IQNbrain.save_model(ckpt_path)
+            DQNbrain.save_model(ckpt_path)
 
         plt.figure(figsize=(10, 8))
         plt.subplot(211)
@@ -141,7 +128,7 @@ def train():
 
 def test():
     with tf.Session() as sess:
-        IQNbrain = IQNAgent(sess, OUTPUT, INPUT,
+        DQNbrain = DQNAgent(sess, OUTPUT, INPUT,
                             learning_rate=LEARNING_RATE,
                             gamma=DISCOUNT,
                             batch_size=MINIBATCH_SIZE,
@@ -152,7 +139,7 @@ def test():
                             gradient_norm=None,
                             )
 
-        IQNbrain.load_model(tf.train.latest_checkpoint(path))
+        DQNbrain.load_model(tf.train.latest_checkpoint(path))
 
         masspole_list = np.arange(0.01, 0.21, 0.025)
         length_list = np.arange(0.5, 3, 0.25)
@@ -176,7 +163,7 @@ def test():
                         if RENDER:
                             env.render()
 
-                        action, actions_value, q_dist, tau_beta = IQNbrain.choose_action(s)
+                        action, actions_value = DQNbrain.choose_action(s)
 
                         s_, r, done, _ = env.step(action)
 
@@ -198,9 +185,8 @@ def test():
         ax.set_yticklabels(['0.01', '0.20'])
         ax.set_xlabel('Pole length')
         ax.set_ylabel('Pole mass')
-        ax.set_title('Robustness test: IQN')
+        ax.set_title('Robustness test: DQN')
         fig.colorbar(ims, ax=ax)
-
         plt.show()
         plt.close()
 
