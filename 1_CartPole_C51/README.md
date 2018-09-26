@@ -9,7 +9,7 @@
 
 [Github Repo](https://github.com/reinforcement-learning-kr/distributional_rl/tree/master/1_CartPole_C51)
 
-
+<br>
 
 ## Introduction
 
@@ -49,6 +49,8 @@ Distributional RL에 대해 설명한 게시물에서도 언급했듯이 distrib
 
 </p>
 
+<br>
+
 ## Value Distribution
 
 Action에 대한 Distribution에 대해서 살펴보도록 하겠습니다. 
@@ -71,7 +73,7 @@ C51의 경우 분포를 결정해주기 위해서 몇가지 파라미터들이 �
 
 위 그림에서도 볼 수 있듯이 support값은 최소값부터 최대값까지 support의 수에 맞게 일정한 간격으로 나누게 됩니다. 즉, supports는 이렇게 미리 결정된 파라미터들에 의해 그 값이 정해지게 됩니다. 네트워크는 바로 이 support들에 대한 확률을 구해주게 됩니다. 각 action에 대해서 하나의 distribution이 필요하기 때문에 **network output의 크기는 [support의 수 * action의 수]** 가 됩니다.  
 
-
+<br>
 
 ## Algorithm
 
@@ -83,7 +85,7 @@ C51의 경우 분포를 결정해주기 위해서 몇가지 파라미터들이 �
 
 각각 어떻게 차이가 있는지 한번 살펴보도록 하겠습니다. 
 
-
+<br>
 
 ### 1. Q-value 계산
 
@@ -101,7 +103,7 @@ C51 알고리즘에서 Q-value를 계산하는 방법은 이산확률분포의 �
 
  위 수식처럼 분포의 기대값을 구하는 연산을 하면 결과적으로 Q-value는 하나의 scalar값을 가지게 됩니다. 이 경우 "뭐지... 결국 scalar값으로 action 선택하자나..." 라고 생각하실수도 있지만!! 단순히 하나의 기대값을 추정하는 것보다 정확하게 분포를 추정하고 그 기대값을 구하는 것이 더 정확한 예측이 될 것이라 생각할 수 있습니다. 
 
-
+<br>
 
 ### 2. Loss 구하기 
 
@@ -117,7 +119,7 @@ C51 알고리즘에서 Q-value를 계산하는 방법은 이산확률분포의 �
 
 마지막으로 위의 식에 필요한 target distribution을 구하는 과정에 대해 살펴보도록 하겠습니다. 
 
-
+<br>
 
 ### 3. Target Distribution
 
@@ -147,7 +149,17 @@ Target distribution의 경우 supports에 대해 위와 같은 연산을 해줍�
 
 
 
+## Team
 
+민규식: [Github](https://github.com/Kyushik), [Facebook](https://www.facebook.com/kyushik.min)
+
+차금강: [Github](https://github.com/chagmgang), [Facebook](https://www.facebook.com/profile.php?id=100002147815509)
+
+윤승제: [Github](https://github.com/sjYoondeltar), [Facebook](https://www.facebook.com/seungje.yoon)
+
+김하영: [Github](https://github.com/hayoung-kim), [Facebook](https://www.facebook.com/altairyoung)
+
+김정대: [Github](https://github.com/kekmodel), [Facebook](https://www.facebook.com/kekmodel)
 
 
 
