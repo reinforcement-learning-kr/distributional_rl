@@ -29,7 +29,7 @@
 
 이렇게 확률적인 환경에서는 하나의 숫자로 미래의 reward를 예측하는 것보다 위와 같이 분포로 미래의 reward를 예측하는 것이 더 정확한 예측이라고 할 수 있습니다. 이렇게 미래의 보상을 분포를 통해 예측하여 확률적인 환경에서 더 정확한 예측을 수행하는 강화학습 알고리즘이 바로 **Distributional Reinforcement Learning** 알고리즘입니다!! 
 
-
+<br>
 
 ## Algorithms
 
@@ -40,7 +40,7 @@
 - [Implicit Quantile Networks for Distributional Reinforcement Learning (IQN)](https://arxiv.org/abs/1806.06923)
 
 
-
+<br>
 
 ## Links
 
@@ -51,9 +51,24 @@
 - [IQN]()
 
 
+<br>
 
 ## Github
 
 해당 알고리즘의 코드들은 아래의 Github에 정리되어있습니다. 
 
 [RL Korea Distibutional RL Github](https://github.com/reinforcement-learning-kr/distributional_rl)
+
+
+
+## Team
+
+민규식: [Github](https://github.com/Kyushik), [Facebook](https://www.facebook.com/kyushik.min)
+
+차금강: [Github](https://github.com/chagmgang), [Facebook](https://www.facebook.com/profile.php?id=100002147815509)
+
+윤승제: [Github](https://github.com/sjYoondeltar), [Facebook](https://www.facebook.com/seungje.yoon)
+
+김하영: [Github](https://github.com/hayoung-kim), [Facebook](https://www.facebook.com/altairyoung)
+
+김정대: [Github](https://github.com/kekmodel), [Facebook](https://www.facebook.com/kekmodel)
