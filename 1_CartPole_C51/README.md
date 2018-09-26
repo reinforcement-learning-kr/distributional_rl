@@ -25,7 +25,7 @@ Distributional RL에 대해 설명한 게시물에서도 언급했듯이 distrib
 
 <p align="center">
 
-<img src="./Images/distributionalRL.png" alt="distributional RL" style="width: 500px;"/>
+<img src="./Images/distributionalRL.png" alt="distributional RL" width="600"/>
 
 </p>
 
@@ -33,7 +33,7 @@ Distributional RL에 대해 설명한 게시물에서도 언급했듯이 distrib
 
 <p align="center">
 
- <img src="./Images/bellman_equation.png" alt="distributional RL" class ="center" style="width: 600px;"/>
+ <img src="./Images/bellman_equation.png" alt="distributional RL" width="600"/>
 
 </p>
 
@@ -45,7 +45,7 @@ Distributional RL에 대해 설명한 게시물에서도 언급했듯이 distrib
 
 <p align="center">
 
- <img src="./Images/network_output.png" alt="Network" class ="center" style="width: 700px;"/>
+ <img src="./Images/network_output.png" alt="Network" width="800"/>
 
 </p>
 
@@ -55,7 +55,7 @@ Action에 대한 Distribution에 대해서 살펴보도록 하겠습니다.
 
 <p align="center">
 
- <img src="./Images/support_and_prob.png" alt="Distribution" class ="center" style="width: 700px;"/>
+ <img src="./Images/support_and_prob.png" alt="Distribution" width="800"/>
 
 </p>
 
@@ -93,7 +93,7 @@ C51 알고리즘에서 Q-value를 계산하는 방법은 이산확률분포의 �
 
 <p align="center">
 
- <img src="./Images/Equation_Q.png" alt="Equation of Q-value" class ="center" style="width: 400px;"/>
+ <img src="./Images/Equation_Q.png" alt="Equation of Q-value" width="400"/>
 
 </p>
 
@@ -111,7 +111,7 @@ C51 알고리즘에서 Q-value를 계산하는 방법은 이산확률분포의 �
 
 <p align="center">
 
- <img src="./Images/Equation_loss.png" alt="Equation of Loss" class ="center" style="width: 400px;"/>
+ <img src="./Images/Equation_loss.png" alt="Equation of Loss" width="400"/>
 
 </p>
 
@@ -127,7 +127,7 @@ Target distribution을 만드는 이 과정이 C51 알고리즘의 구현에 있
 
 <p align="center">
 
- <img src="./Images/Equation_target1.png" alt="Equation of Loss" class ="center" style="width: 300px;"/>
+ <img src="./Images/Equation_target1.png" alt="Equation of Loss" width="400"/>
 
 </p>
 
@@ -139,7 +139,7 @@ Target distribution의 경우 supports에 대해 위와 같은 연산을 해줍�
 
 <p align="center">
 
- <img src="./Images/bellman_operation.png" alt="Bellman Operation" class ="center" style="width: 800px;"/>
+ <img src="./Images/bellman_operation.png" alt="Bellman Operation" class ="center" width="800"/>
 
 </p>
 
