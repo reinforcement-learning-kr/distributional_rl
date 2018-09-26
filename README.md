@@ -1,9 +1,7 @@
 # Distributional RL
-[English Ver.]()
-
 ## Introduction
 
-본 repository는 강화학습의 한 종류 중 하나인 **Distributional Reinforcement Learning**에 대해서 설명하고 [Deepmind](https://deepmind.com/)에서 발표한 몇가지 알고리즘을 구현체와 함께 설명할 예정입니다.   
+본 게시글은 강화학습의 한 종류 중 하나인 **Distributional Reinforcement Learning**에 대해서 설명하고 [Deepmind](https://deepmind.com/)에서 발표한 몇가지 알고리즘을 설명할 예정입니다.   
 
 우선 일반적인 강화학습 알고리즘과 distributional RL 알고리즘을 간단하게 그림으로 비교한 것이 다음과 같습니다. 
 
@@ -35,9 +33,27 @@
 
 ## Algorithms
 
-최고의 AI관련 연구 기관 중 하나인 [Deepmind](https://deepmind.com/)가 최근 distributional RL에 대한 몇 가지 논문들을 발표하였으며 해당 기술들을 계속 발전시켜 다양하게 적용 중에 있습니다. 본 repository에서 리뷰하고 구현할 논문들은 다음과 같습니다. 
+최고의 AI관련 연구 기관 중 하나인 [Deepmind](https://deepmind.com/)가 최근 distributional RL에 대한 몇 가지 논문들을 발표하였으며 해당 기술들을 계속 발전시켜 다양하게 적용 중에 있습니다. 본 블로그에서 리뷰할 논문들은 다음과 같습니다. 
 
 - [A Distributional Perspective on Reinforcement Learning (C51)](https://arxiv.org/abs/1707.06887)
 - [Distributional Reinforcement Learning with Quantile Regression (QR-DQN)](https://arxiv.org/abs/1710.10044)
 - [Implicit Quantile Networks for Distributional Reinforcement Learning (IQN)](https://arxiv.org/abs/1806.06923)
 
+
+
+
+## Links
+
+각 알고리즘들에 대한 설명은 다음의 링크들을 따라가시면 됩니다 
+
+- [C51]()
+- [QR-DQN]()
+- [IQN]()
+
+
+
+## Github
+
+해당 알고리즘의 코드들은 아래의 Github에 정리되어있습니다. 
+
+[RL Korea Distibutional RL Github](https://github.com/reinforcement-learning-kr/distributional_rl)
