@@ -237,7 +237,7 @@ CDF는 확률변수 값에 따른 확률을 누적해서 더하기 때문에 확
 
 위의 식은 다음의 과정을 거쳐서 진행됩니다. 
 
-1. Target support들과 network를 통해 추정한 support들의 차이를 구한다. 
+1. Target network를 통해 구한 target support들과 network를 통해 추정한 support들의 차이를 구한다. 
    (각 target support와 추정된 support의 차이를 모두 구해야함)
 2. 차이 값이 0보다 작은 경우 (1-tau)를, 0보다 크거나 같은 경우 (tau)를 곱해준다. 
 3. 해당 결과를 target에 대해서는 평균을 (E), prediction에 대해서는 sum을 해주어 최종 loss를 도출   
@@ -374,6 +374,8 @@ Error의 각 column에 해당하는 quantile의 중앙값들을 나타낸 것이
  <img src="img/Quantile_Huber_Loss.png" alt="Huber loss" width="500"/>
 
 </p>
+
+위의 부분에서 기존에는 u<0 일 때 (tau-1) 이었던 것이 (1-tau)로 바뀌었습니다. 이는 Huber loss가 적용되면서 L(u)가 0보다 커졌기 때문에 (1-tau)를 해줘야 최종적으로 loss값이 양수가 됩니다. 
 
 Rho의 부분을 위와 같이 수정하여 최종적으로 아래와 같은 Quantile Huber Loss에 적용해주면 Quantile Huber Loss에 대한 모든 설명이 마무리됩니다!! :) 
 
