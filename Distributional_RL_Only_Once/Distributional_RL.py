@@ -12,15 +12,13 @@ class Distributional_RL:
         self.sess = sess
         self.batch_size = 8
         self.gamma = 0.99
-        self.quantile_embedding_dim = 64
+        self.quantile_embedding_dim = 128
 
         self.num_support = 8
         self.V_max = 5
         self.V_min = -5
         self.dz = float(self.V_max - self.V_min) / (self.num_support - 1)
         self.z = [self.V_min + i * self.dz for i in range(self.num_support)]
-
-        self.delta_tau = 1/self.num_support
 
         self.state = tf.placeholder(tf.float32, [None, self.state_size])
         self.action = tf.placeholder(tf.float32, [None, self.action_size])
@@ -48,20 +46,20 @@ class Distributional_RL:
             Loss = tf.where(tf.less(error_loss, 0.0), inv_tau * Huber_loss, tau * Huber_loss)
             self.loss = tf.reduce_mean(tf.reduce_sum(tf.reduce_mean(Loss, axis=2), axis=1))
 
-            self.train_op = tf.train.AdamOptimizer(1e-4).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
         elif self.model == 'DQN':
             self.Q_s_a = self.main_network * self.action
             self.Q_s_a = tf.expand_dims(tf.reduce_sum(self.Q_s_a, axis=1), -1)
             self.loss = tf.losses.mean_squared_error(self.dqn_Y, self.Q_s_a)
-            self.train_op = tf.train.AdamOptimizer(0.0001).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
         elif self.model == 'C51':
             expand_dim_action = tf.expand_dims(self.action, -1)
             self.Q_s_a = self.main_network * expand_dim_action
             self.Q_s_a = tf.reduce_sum(self.Q_s_a, axis=1)
             self.loss = - tf.reduce_mean(tf.reduce_sum(tf.multiply(self.M, tf.log(self.Q_s_a + 1e-20)), axis=1))
-            self.train_op = tf.train.AdamOptimizer(0.001).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
         elif self.model == 'QRDQN':
             self.theta_s_a = self.main_network
@@ -82,7 +80,7 @@ class Distributional_RL:
             Loss = tf.where(tf.less(error_loss, 0.0), inv_tau * Huber_loss, tau * Huber_loss)
             self.loss = tf.reduce_mean(tf.reduce_sum(tf.reduce_mean(Loss, axis=2), axis=1))
 
-            self.train_op = tf.train.AdamOptimizer(1e-4).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
         self.assign_ops = []
         for v_old, v in zip(self.target_params, self.main_params):
@@ -187,12 +185,12 @@ class Distributional_RL:
             elif self.model == 'IQN':
                 state_tile = tf.tile(self.state, [1, self.num_support])
                 state_reshape = tf.reshape(state_tile, [-1, self.state_size])
-                state_net = tf.layers.dense(inputs=state_reshape, units=128, activation=tf.nn.selu)
+                state_net = tf.layers.dense(inputs=state_reshape, units=self.quantile_embedding_dim, activation=tf.nn.selu)
 
                 tau = tf.reshape(self.tau, [-1, 1])
                 pi_mtx = tf.constant(np.expand_dims(np.pi * np.arange(0, 64), axis=0), dtype=tf.float32)
                 cos_tau = tf.cos(tf.matmul(tau, pi_mtx))
-                phi = tf.layers.dense(inputs=cos_tau, units=128, activation=tf.nn.relu)
+                phi = tf.layers.dense(inputs=cos_tau, units=self.quantile_embedding_dim, activation=tf.nn.relu)
 
                 net = tf.multiply(state_net, phi)
                 net = tf.layers.dense(inputs=net, units=512, activation=tf.nn.relu)
