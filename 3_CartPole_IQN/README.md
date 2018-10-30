@@ -20,8 +20,7 @@
 본 게시물은 2018년 6월에 발표된 논문 [Implicit Quantile Networks for Distributional Reinforcement Learning](https://arxiv.org/abs/1806.06923) 의 내용에 대해 설명합니다.
 
 <p align= "center">
-
-<img src="https://www.dropbox.com/s/mmxtgylh0ntatp4/IQN_paper.png?dl=1" alt="paper" style="width: 800px;"/>
+<img src="img/IQN_paper.png" alt="paper" style="width: 800px;"/>
 
  </p>
 
@@ -55,7 +54,7 @@ QR-DQN 논문에서는 quantile regression 기법을 이용하여 Wasserstein di
  위의 예시를 그림으로 표현한 것이 아래와 같습니다. 
 
 <p align="center">
-<img src="https://www.dropbox.com/s/pffm77vus3k4uex/qr_dqn_iqn.png?dl=1" alt="QRDQN vs IQN" width="800"/>
+<img src="img/qr_dqn_iqn.png" alt="QRDQN vs IQN" width="800"/>
 
 </p>
 
@@ -64,8 +63,7 @@ QR-DQN 논문에서는 quantile regression 기법을 이용하여 Wasserstein di
 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/unsy98e3xmz4a5n/compare_paper.png?dl=1" alt="Comparison from paper" width="800"/>
+<img src="img/compare_paper.png" alt="Comparison from paper" width="800"/>
 
 </p>
 
@@ -88,7 +86,7 @@ QR-DQN 논문에서는 quantile regression 기법을 이용하여 Wasserstein di
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/vvlartdbmh51n69/risk_sensitive1.png?dl=1" alt="Risk sensitive1" width="600"/>
+ <img src="img/risk_sensitive1.png" alt="Risk sensitive1" width="600"/>
 
 </p>
 
@@ -109,7 +107,7 @@ Sampling을 통해 학습을 수행하고 action을 선택하는 경우 이 risk
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/jtvk920xe5ubqs7/risk_averse.png?dl=1" alt="Risk averse" width="1000"/>
+ <img src="img/risk_averse.png" alt="Risk averse" width="1000"/>
 
 </p>
 
@@ -121,7 +119,7 @@ Sampling을 통해 학습을 수행하고 action을 선택하는 경우 이 risk
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/19q9zx7o8b4npj7/risk_seeking.png?dl=1" alt="Risk averse" width="1000"/>
+ <img src="img/risk_seeking.png" alt="Risk seeking" width="1000"/>
 
 </p>
 
@@ -140,7 +138,7 @@ Sampling을 통해 학습을 수행하고 action을 선택하는 경우 이 risk
 
 위의 예시 중에 가장 간단한 CVaR에 대해서 살펴보도록 하겠습니다. CVaR의 수식은 다음과 같습니다. 
 
- <img src="https://www.dropbox.com/s/3bvwmom4ky6pmhp/CVaR.png?dl=1" alt="CVar" width="300"/>
+ <img src="img/CVaR.png" alt="CVar" width="300"/>
 
 원래 tau는 [0,1] 중에서 uniform한 확률로 선택합니다. 하지만 위의 경우 eta를 예를 들어 0.25로 하면 0.25tau가 됩니다. 즉 [0, 0.25] 중에서 uniform한 확률로 tau를 sampling하게 됩니다. 결과적으로 risk-averse policy에 따라 action을 선택하게 됩니다.  
 
@@ -151,8 +149,7 @@ Sampling을 통해 학습을 수행하고 action을 선택하는 경우 이 risk
 여기서는 IQN 네트워크의 구조에 대해 살펴보도록 하겠습니다. 일단 위에서 봤던 그림을 다시 한번 살펴보도록 하겠습니다.
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/unsy98e3xmz4a5n/compare_paper.png?dl=1" alt="Comparison from paper" width="800"/>
+<img src="img/compare_paper.png" alt="Comparison from paper" width="800"/>
 
 </p>
 
@@ -161,8 +158,7 @@ Sampling을 통해 학습을 수행하고 action을 선택하는 경우 이 risk
 특정 action a에 대해 DQN은 다음과 같은 함수들로 나타낼 수 있습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/br22t2a08dgz03a/DQN_equation.png?dl=1" alt="DQN" width="300"/>
+<img src="img/DQN_equation.png" alt="DQN" width="300"/>
 
 </p>
 
@@ -172,7 +168,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/h6z8ppz9z9tkr8y/IQN_equation.png?dl=1" alt="DQN" width="500"/>
+ <img src="img/IQN_equation.png" alt="IQN" width="500"/>
 
 </p>
 
@@ -184,7 +180,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/uxnaqayrxoazj93/embedding.png?dl=1" alt="Embedding" width="600"/>
+ <img src="img/embedding.png" alt="Embedding" width="600"/>
 
 </p>
 
@@ -198,7 +194,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/y5gzs2vdpn6qlp3/embedding_progress1.png?dl=1" alt="Embedding progress 1" width="500"/>
+ <img src="img/embedding_progress1.png" alt="Embedding progress 1" width="500"/>
 
 </p>
 
@@ -206,7 +202,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 
    <p align="center">
 
-<img src="https://www.dropbox.com/s/n86yp26tlcovjch/embedding_progress2.png?dl=1" width="600"/>
+<img src="img/embedding_progress2.png" width="600"/>
 
 </p>
 
@@ -216,15 +212,14 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 
 <p align="center">
 
- <img src="https://www.dropbox.com/s/i1qs8zf162eniuu/embedding_progress3.png?dl=1" alt="Embedding" width="1000"/>
+ <img src="img/embedding_progress3.png" alt="Embedding" width="1000"/>
 
 </p>
 
 4. 다음으로는 3의 결과에 cos 연산을 해주고 weight를 곱하고 bias를 더해줍니다. 그리고 해당 결과에 최종적으로 ReLU 함수를 적용해줍니다. 여기서 weight의 사이즈는 [embedding dim x convolution 결과의 크기] 이며 bias의 사이즈는 [convolution 결과의 크기] 입니다. 결국 embedding 연산의 최종 결과는 [batch size x convolution 결과의 크기]가 됩니다. Convolution 연산의 최종 결과 또한 크기가 [batch size x convolution 결과의 크기] 입니다. 이에 따라 둘은 크기가 같아지게 되고 이에 따라 element-wise 하게 곱할 수 있게 됩니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/bnbxq3aj6c5kmrt/embedding_progress4.png?dl=1" alt="Embedding" width="800"/>
+<img src="img/embedding_progress4.png" alt="Embedding" width="800"/>
 
 </p>
 
@@ -233,8 +228,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 여기서 약간의 의문이 들 수 있을 것이라 생각합니다. 왜 **n cosine basis function**을 이용할까요? 논문에서는 다양한 함수에 대해서 실험을 수행하였고 그 결과 **n cosine basis function**이 가장 좋은 결과를 보였다고 합니다. 여러 함수에 대해 테스트한 결과는 다음과 같습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/09idlykr8xr6fo9/embedding_compare.png?dl=1" alt="Embedding" width="800"/>
+<img src="img/embedding_compare.png" alt="Embedding" width="800"/>
 
 </p>
 
@@ -245,16 +239,14 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 사실 본 논문에서는 QR-DQN에서 사용했던 **Quantile Huber Loss**를 그대로 이용합니다. 하지만 본 논문에서는 식을 다음과 같이 표시합니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/ie5l2z5cwagoj86/loss.png?dl=1" alt="Embedding" width="500"/>
+<img src="img/loss.png" alt="Embedding" width="500"/>
 
 </p>
 
 본 논문에서 N은 추정을 위해 일반 network 연산에서 sampling한 tau의 수 입니다. N'은 target distribution 도출을 위해 target network 연산에서 sampling한 tau의 수 입니다. 위 식에 대해서는 QR-DQN에서 자세히 설명하였으므로 추가적인 설명은 하지 않도록 하겠습니다. 다만 본 논문에서는 N과 N'를 다양하게 바꿔가면서 테스트한 결과를 다음과 같이 보여줍니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/t2eeof94yhq57gb/various_n.png?dl=1" alt="Various N" width="700"/>
+<img src="img/various_n.png" alt="Various N" width="700"/>
 
 </p>
 
@@ -270,8 +262,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
  본 논문에서  action을 선택하는 식이 QR-DQN과 비교했을 때 약간의 차이가 있습니다. 해당 식은 다음과 같습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/76l4gi57vasj300/action_equation.png?dl=1" alt="Action equation" width="500"/>
+<img src="img/action_equation.png" alt="Action equation" width="500"/>
 
 </p>
 
@@ -282,8 +273,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
  본 논문의 알고리즘은 다음과 같습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/fbxxlz25l6dunxi/algorithm.png?dl=1" alt="algorithm (IQN)" width="700"/>
+<img src="img/algorithm.png" alt="algorithm (IQN)" width="700"/>
 
 </p>
 
@@ -302,8 +292,7 @@ IQN도 DQN과 동일한 function인 **psi**와 **f**를 이용합니다. 그 대
 우선 Risk의 정도를 다양하게 한 결과가 아래와 같습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/8bcsng48ywep3ay/sampling_distribution_result.png?dl=1" alt="Risk compare result" width="1000"/>
+<img src="img/sampling_distribution_result.png" alt="Risk compare result" width="1000"/>
 
 </p>
 
@@ -322,14 +311,12 @@ Risk-averse > Neutral > Risk-seeking
 IQN 알고리즘을 57개의 Atari game에 테스트한 결과가 다음과 같습니다. 
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/p530cm694ey9v0h/Result1.png?dl=1" alt="Result1" width="600"/>
+<img src="img/Result1.png" alt="Result1" width="600"/>
 
 </p>
 
 <p align="center">
-
-<img src="https://www.dropbox.com/s/p4v7brznezqo4lk/Result2.png?dl=1" alt="Result2" width="600"/>
+<img src="img/Result2.png" alt="Result2" width="600"/>
 
 </p>
 
