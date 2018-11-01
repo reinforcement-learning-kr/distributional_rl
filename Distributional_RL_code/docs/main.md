@@ -36,7 +36,7 @@ merged = tf.summary.merge_all()
 writer = tf.summary.FileWriter('./board/'+model, sess.graph)
 ```
 
-데이터가 쌓일 max의 개수를 지정합니다. 사용할 환경인 CartPole-v1을 지정합니다. 학습에 사용할 model과 learning_rate를 지정합니다. model은 'DQN', 'C51', 'QRDQN', 'IQN' 네가지입니다. 다음 Distributional_RL의 클래스를 이용하여 dqn이라는 객체를 지정하고 sess.run(tf.global_variables_initializer())를 이용하여 초기 파라미터들을 셋팅합니다. sess.run(dqn.assign_ops)를 이용하여 초기 target network와 main network의 파라미터들을 동일하게 셋팅합니다. r = tf.placeholder(tf.float32)이하의 코드는 tensorboard 파일을 만들기 위해 추가된 코드입니다.
+데이터가 쌓일 max의 개수를 지정합니다. 사용할 환경인 CartPole-v1을 지정합니다. 학습에 사용할 model과 learning_rate를 지정합니다. model은 `DQN`, `C51`, `QR-DQN`, `IQN` 네가지입니다. 다음 Distributional_RL의 클래스를 이용하여 dqn이라는 객체를 지정하고 sess.run(tf.global_variables_initializer())를 이용하여 초기 파라미터들을 셋팅합니다. sess.run(dqn.assign_ops)를 이용하여 초기 target network와 main network의 파라미터들을 동일하게 셋팅합니다. r = tf.placeholder(tf.float32)이하의 코드는 tensorboard 파일을 만들기 위해 추가된 코드입니다.
 
 ## run episode with step
 
