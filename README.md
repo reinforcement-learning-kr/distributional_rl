@@ -24,7 +24,7 @@
 - [Distributional RL 개요](https://reinforcement-learning-kr.github.io/2018/09/27/Distributional_intro/)
 - [C51](https://reinforcement-learning-kr.github.io/2018/10/02/C51/)
 - [QR-DQN](https://reinforcement-learning-kr.github.io/2018/10/22/QR-DQN/)
-- [IQN](https://reinforcement-learning-kr.github.io/2018/10/30/IQN/))
+- [IQN](https://reinforcement-learning-kr.github.io/2018/10/30/IQN/)
 
 <br>
 
