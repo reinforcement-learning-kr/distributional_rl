@@ -17,7 +17,7 @@
 
 <br>
 
-## Links
+## Description of the Algorithms
 
 각 알고리즘들에 대한 설명은 다음의 링크들을 따라가시면 됩니다 
 

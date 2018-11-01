@@ -2,7 +2,7 @@
 
 본 repository의 코드에서는 `DQN`과 distributional RL의 알고리즘 중 `C51`, `QR-DQN`, `IQN`에 대한 구현을 수행하였습니다. 해당 알고리즘의 구현에 대한 설명은 다음의 자료들을 참고해주세요. 
 
-
+<br>
 
 ## 구현 설명
 
@@ -12,7 +12,7 @@
 - [QR-DQN](https://github.com/reinforcement-learning-kr/distributional_rl/blob/master/Distributional_RL_code/docs/QRDQN.md)
 - [IQN](https://github.com/reinforcement-learning-kr/distributional_rl/blob/master/Distributional_RL_code/docs/IQN.md)
 
-
+<br>
 
 ## 알고리즘 설명 
 
