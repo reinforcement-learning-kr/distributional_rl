@@ -19,7 +19,7 @@ class Distributional_RL:
         self.V_min = -5
         self.dz = float(self.V_max - self.V_min) / (self.num_support - 1)
         self.z = [self.V_min + i * self.dz for i in range(self.num_support)]
-
+        
         self.state = tf.placeholder(tf.float32, [None, self.state_size])
         self.action = tf.placeholder(tf.float32, [None, self.action_size])
         self.dqn_Y = tf.placeholder(tf.float32, [None, 1])
@@ -55,6 +55,8 @@ class Distributional_RL:
             self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 
         elif self.model == 'C51':
+            self.z_space = tf.tile(tf.reshape(self.z, [1, 1, self.num_support]), [self.batch_size, self.action_size, 1])
+            self.z_space_with_target_action_support = self.target_action_support * self.z_space
             expand_dim_action = tf.expand_dims(self.action, -1)
             self.Q_s_a = self.main_network * expand_dim_action
             self.Q_s_a = tf.reduce_sum(self.Q_s_a, axis=1)
@@ -113,10 +115,9 @@ class Distributional_RL:
                                  feed_dict={self.state: state_stack, self.action: action_stack, self.dqn_Y: T_theta})
 
         elif self.model == 'C51':
-            z_space = tf.tile(tf.reshape(self.z, [1, 1, self.num_support]), [self.batch_size, self.action_size, 1])
-            prob_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
-            Q_next_state = self.sess.run(self.target_action_support * z_space, feed_dict={self.state: next_state_stack})
+            Q_next_state = self.sess.run(self.z_space_with_target_action_support, feed_dict={self.state: next_state_stack})
             next_action = np.argmax(np.sum(Q_next_state, axis=2), axis=1)
+            prob_next_state = self.sess.run(self.target_network, feed_dict={self.state: next_state_stack})
             prob_next_state_action = [prob_next_state[i, action, :] for i, action in enumerate(next_action)]
 
             m_prob = np.zeros([self.batch_size, self.num_support])
