@@ -21,10 +21,10 @@
 
 각 알고리즘들에 대한 설명은 다음의 링크들을 따라가시면 됩니다 
 
-- [Distributional RL 개요](https://reinforcement-learning-kr.github.io/2018/09/27/Distributional_intro/)
-- [C51](https://reinforcement-learning-kr.github.io/2018/10/02/C51/)
-- [QR-DQN](https://reinforcement-learning-kr.github.io/2018/10/22/QR-DQN/)
-- [IQN](https://reinforcement-learning-kr.github.io/2018/10/30/IQN/)
+- [Distributional RL 개요](https://rlkorea.tistory.com/14)
+- [C51](https://rlkorea.tistory.com/15)
+- [QR-DQN](https://rlkorea.tistory.com/16)
+- [IQN](https://rlkorea.tistory.com/18)
 
 <br>
 
